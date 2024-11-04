@@ -13,10 +13,9 @@ function createServer() {
     if (req.url === '/' || req.url === '/favicon.ico') {
       res.on('error', (err) => {
         console.error(err);
-        res.statusCode = 400;
-        res.writeHead(200, { 'Content-Type': 'text/plain' });
+        res.writeHead(500, { 'Content-Type': 'text/plain' });
 
-        return res.end('Failed forme parse!');
+        return res.end('Failed form parse!');
       });
       res.writeHead(200, { 'Content-Type': 'text/html' });
 
@@ -43,7 +42,7 @@ function createServer() {
 
       form.parse(req, (err, { date, title, amount }) => {
         if (err) {
-          res.writeHead(404, { 'Content-Type': 'text/plain' });
+          res.writeHead(500, { 'Content-Type': 'text/plain' });
 
           return res.end('Form parse error!');
         }
@@ -62,13 +61,14 @@ function createServer() {
 
         const jsonData = JSON.stringify(data);
         const normilizePath = path.resolve(__dirname, '../db/expense.json');
-        const streamJson = fs.createWriteStream(normilizePath);
 
         if (!fs.existsSync(normilizePath)) {
           res.writeHead(404, { 'Content-Type': 'text/plain' });
 
           return res.end('File not exist!');
         }
+
+        const streamJson = fs.createWriteStream(normilizePath);
 
         streamJson.write(jsonData, () => {
           res.writeHead(200, { 'Content-Type': 'application/json' });
